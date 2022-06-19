@@ -1,27 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { concat } from 'rxjs';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EmergencyContact } from '../model/emergency-contact.entity';
 
 @Injectable()
 export class EmergencyContactRepository {
-  private emergencyContacts: EmergencyContact[] = new Array();
+  constructor(
+    @InjectRepository(EmergencyContact)
+    private repository: Repository<EmergencyContact>,
+  ) {}
 
-  constructor() {
-    for (let i = 0; i < 1; i++) {
-      this.emergencyContacts.push(new EmergencyContact());
-    }
-  }
-
-  getUsers(): EmergencyContact[] {
-    return this.emergencyContacts;
+  getEmergencyContact(): Promise<EmergencyContact[]> {
+    return this.repository.find();
   }
 
   async findEmergencyContactById(id: string): Promise<EmergencyContact> {
     return new Promise<EmergencyContact>((resolve, reject) => {
-      let contact = this.emergencyContacts.find((contact) => contact.id === id);
-      if (contact === undefined) reject(null);
-      else resolve(contact);
+      this.repository.findOneBy({ id: id }).then((data) => {
+        if (data == null || data === undefined) reject();
+        else resolve(data);
+      });
     });
   }
 
@@ -29,32 +27,28 @@ export class EmergencyContactRepository {
     userId: string,
   ): Promise<EmergencyContact[]> {
     return new Promise<EmergencyContact[]>((resolve, reject) => {
-      resolve(this.emergencyContacts.filter((contact) => contact.userId === userId));
+      this.repository.findBy({ userId: userId }).then((data) => {
+        if (data == null || data === undefined) reject();
+        else resolve(data);
+      });
     });
   }
 
   async deleteEmergencyContactsForUser(userId: string): Promise<Boolean> {
     return new Promise<Boolean>((resolve, reject) => {
-      this.emergencyContacts
-        .filter((contact) => contact.userId === userId)
-        .map(async (contact) => {
-          await this.deleteEmergencyContactById(contact.id)
-            .then(() => true)
-            .catch(() => {
-              reject(concat);
-            });
-        });
-      resolve(true);
+      this.repository
+        .delete({ userId: userId })
+        .then(() => resolve(true))
+        .catch(() => reject());
     });
   }
 
   async deleteEmergencyContactById(id: string): Promise<Boolean> {
-    let contact = await this.findEmergencyContactById(id);
     return new Promise<Boolean>((resolve, reject) => {
-      let index = this.emergencyContacts.indexOf(contact);
-      if (index == -1) reject(false);
-      this.emergencyContacts.splice(index, 1);
-      resolve(true);
+      this.repository
+        .delete({ id: id })
+        .then(() => resolve(true))
+        .catch(() => reject());
     });
   }
 
@@ -62,18 +56,23 @@ export class EmergencyContactRepository {
     contact: EmergencyContact,
   ): Promise<EmergencyContact> {
     return new Promise<EmergencyContact>((resolve, reject) => {
-      let index = this.emergencyContacts.findIndex((x) => x.id === contact.id);
-      if (index == -1) reject(null);
-      this.emergencyContacts[index] = contact;
-      resolve(this.emergencyContacts[index]);
+      this.findEmergencyContactById(contact.id)
+        .then(() => {
+          return this.repository.save(contact);
+        })
+        .then((newContact) => resolve(newContact))
+        .catch(() => reject());
     });
   }
 
-  public addEmergencyContact(contact: EmergencyContact): Promise<EmergencyContact> {
+  public addEmergencyContact(
+    contact: EmergencyContact,
+  ): Promise<EmergencyContact> {
     return new Promise<EmergencyContact>((resolve, reject) => {
-      let newUser = Object.assign(new EmergencyContact(), contact);
-      this.emergencyContacts.push(newUser);
-      resolve(newUser);
+      return this.repository
+        .save(contact)
+        .then((emergencyContact) => resolve(emergencyContact))
+        .catch(() => reject());
     });
   }
 }

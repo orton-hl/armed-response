@@ -1,52 +1,51 @@
 import { Injectable } from '@nestjs/common';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { User } from '../model/user.entity';
 
 @Injectable()
 export class UserRepository {
-  private users: User[] = new Array();
+  constructor(
+    @InjectRepository(User) private repositoryUser: Repository<User>,
+  ) {}
 
-  constructor() {
-    for (let i = 0; i < 1; i++) {
-      this.users.push(new User());
-    }
-  }
-
-  getUsers(): User[] {
-    return this.users;
+  getUsers(): Promise<User[]> {
+    return this.repositoryUser.find();
   }
 
   async findUserById(id: string): Promise<User> {
-    return new Promise<User>((resolve, reject) => {
-      let user = this.users.find((user) => user.id === id);
-      if (user === undefined) reject(null);
+    return new Promise<User>(async (resolve, reject) => {
+      let user = await this.repositoryUser.findOneBy({id:id})
+      if(user === null) reject()
       else resolve(user);
     });
   }
 
   async deleteUserById(id: string): Promise<Boolean> {
-    let user = await this.findUserById(id);
     return new Promise<Boolean>((resolve, reject) => {
-      let index = this.users.indexOf(user);
-      if (index == -1) reject(false);
-      this.users.splice(index, 1);
-      resolve(true);
+      this.repositoryUser.delete({id:id})
+      .then(() => resolve(true))
+      .catch(() => reject())
     });
   }
 
   public modifyUserById(user: User): Promise<User> {
     return new Promise<User>((resolve, reject) => {
-      let index = this.users.findIndex((x) => x.id === user.id);
-      if (index == -1) reject(null);
-      this.users[index] = user;
-      resolve(this.users[index]);
+      this.findUserById(user.id)
+        .then(() => {
+          return this.repositoryUser.save(user);
+        })
+        .then((newUser) => resolve(newUser))
+        .catch(() => reject());
     });
   }
 
   public registerUser(user: any): Promise<User> {
     return new Promise<User>((resolve, reject) => {
-      let newUser = Object.assign(new User(), user);
-      this.users.push(newUser);
-      resolve(newUser);
+      this.repositoryUser
+        .save(user)
+        .then((newUser) => resolve(newUser))
+        .catch(() => reject());
     });
   }
 }

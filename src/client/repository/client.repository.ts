@@ -1,53 +1,51 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Client } from '../model/client.entity';
 
 @Injectable()
 export class ClientRepository {
-  private clients: Client[] = new Array();
 
-  constructor() {
-    for (let i = 0; i < 1; i++) {
-      this.clients.push(new Client());
-    }
+  constructor(@InjectRepository(Client) private repository: Repository<Client>) {
   }
 
-  getUsers(): Client[] {
-    return this.clients;
+  getClients(): Promise<Client[]> {
+    return this.repository.find().then()
   }
 
   async findClientById(id: string): Promise<Client> {
-    return new Promise<Client>((resolve, reject) => {
-      let client = this.clients.find((client) => client.id === id);
-      if (client === undefined) reject(null);
+    return new Promise<Client>(async (resolve, reject) => {
+      let client = await this.repository.findOneBy({id:id})
+      if(client === null) reject()
       else resolve(client);
     });
   }
 
   async deleteClientById(id: string): Promise<Boolean> {
-    let client = await this.findClientById(id);
     return new Promise<Boolean>((resolve, reject) => {
-      let index = this.clients.indexOf(client);
-      if (index == -1) reject(false);
-      this.clients.splice(index, 1);
-      resolve(true);
+      this.repository.delete({id:id})
+      .then(() => resolve(true))
+      .catch(() => reject())
     });
   }
 
   public modifyClientById(client: Client): Promise<Client> {
     return new Promise<Client>((resolve, reject) => {
-      let index = this.clients.findIndex((x) => x.id === client.id);
-      if (index == -1) reject(null);
-      this.clients[index] = client;
-      resolve(this.clients[index]);
+      this.findClientById(client.id)
+      .then(() => {
+        return this.repository.save(client);
+      })
+      .then((newUser) => resolve(newUser))
+      .catch(() => reject());
     });
   }
 
   public registerClient(client: Client): Promise<Client> {
     return new Promise<Client>((resolve, reject) => {
-      let newUser = Object.assign(new Client(), client);
-      this.clients.push(newUser);
-      resolve(newUser);
+      this.repository
+        .save(client)
+        .then((newClient) => resolve(newClient))
+        .catch(() => reject());
     });
   }
 }

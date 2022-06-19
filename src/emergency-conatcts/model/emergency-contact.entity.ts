@@ -1,14 +1,15 @@
-import * as UUID from 'uuid-1345';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/User/model/user.entity';
 
 var indexCL = 100;
 
 @Entity()
 export class EmergencyContact {
-  @PrimaryGeneratedColumn('increment')
-  @Column()
+  @PrimaryColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
-  @Column()
+
+  @OneToOne(type => User, user => user.id)
   userId: string;
   @Column()
   firstname: string;
@@ -22,19 +23,4 @@ export class EmergencyContact {
   address: string;
   @Column({ default: false })
   isActive: boolean;
-
-  constructor() {
-    this.id = UUID.v5({
-      namespace: UUID.namespace.url,
-      name: `${indexCL++}`,
-    });
-
-    this.userId = '-----5454-------';
-    this.firstname  = '----5454--------';
-    this.lastname = '-----5454-------';
-    this.email = '-----5454-------';
-    this.postalCode = '---5454---------';
-    this.address = '------5454------';
-    this.isActive = false;
-  }
 }

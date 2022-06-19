@@ -6,8 +6,8 @@ import { ClientRepository } from '../repository/client.repository';
 export class ClientService {
   constructor(private clientRepository: ClientRepository) {}
 
-  getClients(): Client[] {
-    return this.clientRepository.getUsers();
+  getClients(): Promise<Client[]> {
+    return this.clientRepository.getClients();
   }
 
   findClientById(id: string): Promise<Client> {

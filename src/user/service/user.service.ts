@@ -6,7 +6,7 @@ import { UserRepository } from '../repository/user.repository';
 export class UserService {
   constructor(private userRepository: UserRepository) {}
 
-  getUsers(): User[] {
+  getUsers(): Promise<User[]> {
     return this.userRepository.getUsers();
   }
 

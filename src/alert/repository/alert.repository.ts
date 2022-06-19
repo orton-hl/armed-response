@@ -1,73 +1,79 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Alert, ResolvePayLoad } from '../model/alert.entity';
-
 
 @Injectable()
 export class AlertRepository {
-  
-  private alerts: Alert[] = new Array();
 
-  constructor() {
-    for (let i = 0; i < 1; i++) {
-      this.alerts.push(new Alert());
-    }
-  }
+  constructor(
+    @InjectRepository(Alert) private alertRepository: Repository<Alert>,
+  ) {}
 
-  getAlerts(): Alert[] {
-    return this.alerts;
+  getAlerts(): Promise<Alert[]> {
+    return this.alertRepository.find();
   }
 
   async findAlertById(id: string): Promise<Alert> {
-    return new Promise<Alert>((resolve, reject) => {
-      let alert = this.alerts.find((alert) => alert.id === id);
-      if (alert === undefined) reject(null);
-      else resolve(alert);
+    return new Promise<Alert>(async (resolve, reject) => {
+      let user = await this.alertRepository.findOneBy({id:id})
+      if(user === null) reject()
+      else resolve(user);
     });
   }
 
-
   async findAlertByUserId(userId: string): Promise<Alert[]> {
-    return new Promise<Alert[]>((resolve, reject) => {
-      resolve(this.alerts.filter((alert) => alert.userId === userId));
+
+    return new Promise<Alert[]>(async (resolve, reject) => {
+      let user = await this.alertRepository.findBy({userId:userId})
+      if(user === null) reject()
+      else resolve(user);
     });
+
   }
 
   async findAlertByClientId(clientId: string): Promise<Alert[]> {
-    return new Promise<Alert[]>((resolve, reject) => {
-      resolve(this.alerts.filter((alert) => alert.clientId === clientId));
+
+    return new Promise<Alert[]>(async (resolve, reject) => {
+      let user = await this.alertRepository.findBy({clientId:clientId})
+      if(user === null) reject()
+      else resolve(user);
     });
   }
 
   async findAlertByClientAndUserId(clientId: string, userId: string): Promise<Alert[]> {
-    return new Promise<Alert[]>((resolve, reject) => {
-      resolve(this.alerts.filter((alert) => alert.clientId === clientId  && alert.userId === userId ));
+    return new Promise<Alert[]>(async (resolve, reject) => {
+      let user = await this.alertRepository.findBy({clientId:clientId,   userId:userId})
+      if(user === null) reject()
+      else resolve(user);
     });
   }
 
   async deleteAlertById(id: string): Promise<Boolean> {
-    let alert = await this.findAlertById(id);
     return new Promise<Boolean>((resolve, reject) => {
-      let index = this.alerts.indexOf(alert);
-      if (index == -1) reject(false);
-      this.alerts.splice(index, 1);
-      resolve(true);
+      this.alertRepository.delete({id:id})
+      .then(() => resolve(true))
+      .catch(() => reject())
     });
   }
 
   public modifyAlertById(alert: Alert): Promise<Alert> {
     return new Promise<Alert>((resolve, reject) => {
-      let index = this.alerts.findIndex((x) => x.id === alert.id);
-      if (index == -1) reject(null);
-      this.alerts[index] = alert;
-      resolve(this.alerts[index]);
+      this.findAlertByClientId(alert.id)
+        .then(() => {
+          return this.alertRepository.save(alert);
+        })
+        .then((newUser) => resolve(newUser))
+        .catch(() => reject());
     });
   }
 
   public registerAlert(alert: any): Promise<Alert> {
     return new Promise<Alert>((resolve, reject) => {
-      let newAlert = Object.assign(new Alert(), alert);
-      this.alerts.push(newAlert);
-      resolve(newAlert);
+      this.alertRepository
+        .save(alert)
+        .then((newUser) => resolve(newUser))
+        .catch(() => reject());
     });
   }
 }

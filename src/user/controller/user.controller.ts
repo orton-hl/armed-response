@@ -21,7 +21,12 @@ export class UserController {
 
   @Get('/get-all-users')
   getUsers() {
-    return this.service.getUsers();
+    return this.service
+      .getUsers()
+      .then((data) => data)
+      .catch(() => {
+        throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+      });
   }
 
   @Get('/get-user')

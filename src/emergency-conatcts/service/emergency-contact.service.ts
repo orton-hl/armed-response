@@ -6,8 +6,8 @@ import { EmergencyContactRepository } from '../repository/emergency-contact.repo
 export class EmergencyContactService {
   constructor(private contactRepository: EmergencyContactRepository) {}
 
-  getContacts(): EmergencyContact[] {
-    return this.contactRepository.getUsers();
+  getContacts(): Promise<EmergencyContact[]> {
+    return this.contactRepository.getEmergencyContact();
   }
 
   findEmergencyContactById(id: string): Promise<EmergencyContact> {

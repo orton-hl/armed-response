@@ -1,12 +1,9 @@
 import * as UUID from 'uuid-1345';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
-var indexCLi = 100;
-
+import { Column, Entity, Generated, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class Client {
-  @PrimaryGeneratedColumn('increment')
-  @Column()
+  @PrimaryColumn()
+  @Generated('uuid')
   id: string;
   @Column()
   username: string;
@@ -22,19 +19,4 @@ export class Client {
   address: string;
   @Column({ default: false })
   isActive: boolean;
-
-  constructor() {
-    this.id = UUID.v5({
-      namespace: UUID.namespace.url,
-      name: `${indexCLi++}`,
-    });
-
-    this.username = '-----5454-------';
-    this.key  = '----5454--------';
-    this.name = '-----5454-------';
-    this.password = '-----5454-------';
-    this.postalCode = '---5454---------';
-    this.address = '------5454------';
-    this.isActive = false;
-  }
 }

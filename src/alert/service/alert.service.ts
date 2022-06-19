@@ -6,7 +6,7 @@ import { AlertRepository } from '../repository/alert.repository';
 export class AlertService {
   constructor(private alertRepository: AlertRepository) {}
 
-  getAlerts(): Alert[] {
+  getAlerts(): Promise<Alert[]> {
     return this.alertRepository.getAlerts();
   }
 
