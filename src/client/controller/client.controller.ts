@@ -9,6 +9,7 @@ import {
   Put,
   Query,
   Res,
+  Session,
 } from '@nestjs/common';
 import { Client } from '../model/client.entity';
 import { ClientService } from '../service/client.service';
@@ -68,5 +69,13 @@ export class ClientController {
       .catch(() => {
         throw new HttpException('Bad request', HttpStatus.BAD_REQUEST);
       });
+  }
+
+  @Post('/login')
+  async login(@Session() session : Record<string , any>) {
+    console.log(session)
+    console.log(session.id)
+    session.authenticated = true
+    return session
   }
 }

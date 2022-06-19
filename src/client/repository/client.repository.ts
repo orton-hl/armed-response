@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Credentials } from 'src/shared/models';
 import { Repository } from 'typeorm';
 import { Client } from '../model/client.entity';
 
@@ -46,6 +47,15 @@ export class ClientRepository {
         .save(client)
         .then((newClient) => resolve(newClient))
         .catch(() => reject());
+    });
+  }
+
+
+  public async findClientByUsenameAndPassword (credentials: Credentials): Promise<Client> {
+    return new Promise<Client>(async (resolve, reject) => {
+      let client = await this.repository.findOneBy({key : credentials.key, password:credentials.password})
+      if(client === null) reject(null)
+      else resolve(client);
     });
   }
 }

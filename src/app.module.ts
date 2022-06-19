@@ -1,3 +1,6 @@
+import { LoginModule } from './login/login.module';
+import { LoginService } from './login/service/login.service';
+import { LoginController } from './login/controller/login.controller';
 import { UserModule } from './User/user.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
@@ -10,25 +13,28 @@ import { User } from './User/model/user.entity';
 import { Client } from './Client/model/client.entity';
 import { EmergencyContact } from './emergency-conatcts/model/emergency-contact.entity';
 import { Alert } from './alert/model/alert.entity';
-import { getEnvPath } from './common/helper/env.helper';
+import * as dotenv from 'dotenv';
+dotenv.config();
 @Module({
   imports: [
-    ClientModule,
-    EmergencyContactModule,
-    AlertModule,
+   
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: '192.168.0.107',
-      port: 5432,
-      username: 'root',
-      password: 'root',
-      database: 'postgres',
+      host: process.env.AR_DB_HOST,
+      port: parseInt(process.env.AR_DB_PORT),
+      username: process.env.AR_DB_USERNAME,
+      password: process.env.AR_DB_PASSWORD,
+      database: process.env.AR_DB_DATABASE,
       entities: [User, Client, EmergencyContact, Alert],
       synchronize: true,
     }),
+    LoginModule,
+    ClientModule,
+    EmergencyContactModule,
+    AlertModule,
     UserModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [ AppController],
+  providers: [LoginService, AppService],
 })
 export class AppModule {}
