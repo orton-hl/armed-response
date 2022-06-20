@@ -14,6 +14,7 @@ import { Client } from './Client/model/client.entity';
 import { EmergencyContact } from './emergency-conatcts/model/emergency-contact.entity';
 import { Alert } from './alert/model/alert.entity';
 import * as dotenv from 'dotenv';
+import { AlertInfo } from './alert/model/alert-info.entity';
 dotenv.config();
 @Module({
   imports: [
@@ -25,7 +26,7 @@ dotenv.config();
       username: process.env.AR_DB_USERNAME,
       password: process.env.AR_DB_PASSWORD,
       database: process.env.AR_DB_DATABASE,
-      entities: [User, Client, EmergencyContact, Alert],
+      entities: [User, Client, EmergencyContact, Alert, AlertInfo],
       synchronize: true,
     }),
     LoginModule,

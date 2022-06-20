@@ -10,6 +10,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
+import { AlertInfo } from '../model/alert-info.entity';
 import { Alert, ResolvePayLoad } from '../model/alert.entity';
 import { AlertService } from '../service/alert.service';
 
@@ -86,6 +87,18 @@ export class AlertController {
   async resolveAlert(@Body() paload: ResolvePayLoad) {
     return this.alertService
       .resolveAlert(paload)
+      .then((data) => {
+        return data;
+      })
+      .catch(() => {
+        throw new HttpException('Error', HttpStatus.NOT_FOUND);
+      });
+  }
+
+  @Post('/alert-info')
+  async postALertInfo(@Body() paload: AlertInfo) {
+    return this.alertService
+      .postAlertInfo(paload)
       .then((data) => {
         return data;
       })

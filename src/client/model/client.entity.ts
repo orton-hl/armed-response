@@ -5,14 +5,11 @@ export class Client {
   @PrimaryColumn()
   @Generated('uuid')
   id: string;
-  @Column()
-  username: string;
-  @Column()
-  key: string;
+  @Generated('uuid')
+  @Column({nullable : true})
+  key?: string;
   @Column()
   name: string;
-  @Column()
-  password: string;
   @Column()
   postalCode: string;
   @Column()

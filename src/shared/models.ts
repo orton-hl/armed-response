@@ -8,6 +8,7 @@ export type LoginResponse = {
 };
 export type Credentials = {
   username?: string;
-  password: string;
+  password?: string;
   key?: string;
+  name?: string
 };

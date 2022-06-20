@@ -3,6 +3,16 @@ import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from '@nestjs/passport';
 import * as dotenv from 'dotenv';
+import * as https from 'https'
+import * as path from 'path'
+import * as fs from 'fs'
+
+
+const httpsOptions = {
+  key: fs.readFileSync( path.join(__dirname, 'secrets', 'key.pem')),
+  cert: fs.readFileSync(path.join(__dirname, 'secrets', 'cert.pem')),
+};
+
 
 dotenv.config();
 

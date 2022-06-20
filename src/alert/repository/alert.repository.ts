@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { AlertInfo } from '../model/alert-info.entity';
 import { Alert, ResolvePayLoad } from '../model/alert.entity';
 
 @Injectable()
@@ -8,6 +9,7 @@ export class AlertRepository {
 
   constructor(
     @InjectRepository(Alert) private alertRepository: Repository<Alert>,
+    @InjectRepository(Alert) private alertInfoRepository: Repository<AlertInfo>,
   ) {}
 
   getAlerts(): Promise<Alert[]> {
@@ -75,5 +77,17 @@ export class AlertRepository {
         .then((newUser) => resolve(newUser))
         .catch(() => reject());
     });
+  }
+
+  public postAlertInfo(alertInfo : AlertInfo) : Promise<Boolean>{
+    return new Promise<Boolean>((resolve, reject)=>{
+      this.alertInfoRepository.save(alertInfo)
+      .then(() => resolve(true))
+      .catch(() => resolve(false))
+    })
+  }
+
+  public getAlertInfo(userId : string) : Promise<AlertInfo[]>{
+    return this.alertInfoRepository.findBy({userId : userId})
   }
 }

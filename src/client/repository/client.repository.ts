@@ -51,9 +51,9 @@ export class ClientRepository {
   }
 
 
-  public async findClientByUsenameAndPassword (credentials: Credentials): Promise<Client> {
+  public async findClientByUsenameAndPassword (clientKey: string,  clientName : string): Promise<Client> {
     return new Promise<Client>(async (resolve, reject) => {
-      let client = await this.repository.findOneBy({key : credentials.key, password:credentials.password})
+      let client = await this.repository.findOneBy({key : clientKey, name:clientName})
       if(client === null) reject(null)
       else resolve(client);
     });

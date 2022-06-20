@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { AlertInfo } from '../model/alert-info.entity';
 import { Alert, ResolvePayLoad } from '../model/alert.entity';
 import { AlertRepository } from '../repository/alert.repository';
 
@@ -54,5 +55,9 @@ export class AlertService {
       if( updated === upadtedAllert ) resolve(true);
       else reject(false)
     });
+  }
+
+  postAlertInfo(alertInfo : AlertInfo){
+    return this.alertRepository.postAlertInfo(alertInfo);
   }
 }

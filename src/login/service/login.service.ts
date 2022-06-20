@@ -30,7 +30,7 @@ export class LoginService {
     });
   }
 
-  async clientLogin(credentials: Credentials) {
+  async clientLogin(clientKey: string,  clientName : string) {
     let response: LoginResponse = {
       isUser: false,
       account: null,
@@ -38,7 +38,7 @@ export class LoginService {
     };
     return new Promise<LoginResponse>((resolve, reject) => {
       this.clientRepository
-        .findClientByUsenameAndPassword(credentials)
+        .findClientByUsenameAndPassword(clientKey, clientName)
         .then((client) => {
           response.account = client;
           resolve(response);
@@ -48,11 +48,13 @@ export class LoginService {
   }
 
   async handleLogin(credentials: Credentials): Promise<LoginResponse> {
+    let  clientKey  : string = credentials.key
+    let  clientName : string = credentials.name
     return new Promise<LoginResponse>(async (resolve, reject) => {
       this.userLogin(credentials)
         .then((data) => resolve(data))
         .catch(() => {
-          this.clientLogin(credentials)
+          this.clientLogin(clientKey,  clientName)
           .then(resolve)
           .catch(reject);
         });
