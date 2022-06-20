@@ -1,5 +1,5 @@
 import { Column, Entity, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from 'src/User/model/user.entity';
+import { User } from 'src/user/model/user.entity';
 
 var indexCL = 100;
 

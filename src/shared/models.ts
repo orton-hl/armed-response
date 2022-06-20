@@ -1,5 +1,5 @@
-import { Client } from "src/Client/model/client.entity";
-import { User } from "src/User/model/user.entity";
+import { Client } from "src/client/model/client.entity";
+import { User } from "src/user/model/user.entity";
 
 export type LoginResponse = {
   isUser: boolean;

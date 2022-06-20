@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { resolve } from 'path';
-import { Client } from 'src/Client/model/client.entity';
-import { ClientRepository } from 'src/Client/repository/client.repository';
+import { Client } from 'src/client/model/client.entity';
+import { ClientRepository } from 'src/client/repository/client.repository';
 import { Credentials, LoginResponse } from 'src/shared/models';
-import { User } from 'src/User/model/user.entity';
-import { UserRepository } from 'src/User/repository/user.repository';
+import { User } from 'src/user/model/user.entity';
+import { UserRepository } from 'src/user/repository/user.repository';
 
 @Injectable()
 export class LoginService {
