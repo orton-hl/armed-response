@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=development
+    environment:
+        - AR_DB_HOST=192.168.0.107
+        - AR_DB_PORT=5432
+        - AR_DB_USERNAME=test
+        - AR_DB_PASSWORD=test
+        - AR_DATABASE=postgres
+        - AR_DATABASE_TYPE=postgres
+        - AR_DB_SERVER_PORT=3000
+        - AR_API_VERSION=1  
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+    links:
+      - postgres:postgres
+    command: npm run dev
