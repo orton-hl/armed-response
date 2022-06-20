@@ -36,6 +36,16 @@ export class AlertController {
       });
   }
 
+  @Get('/get-alerts-for')
+  findAlertByClientId(@Query('userId') userId: string) {
+    return this.alertService
+      .findAlertByUserId(userId)
+      .then((data) => data)
+      .catch(() => {
+        throw new HttpException('Alert not found', HttpStatus.BAD_REQUEST);
+      });
+  }
+
   @Delete('/delete-alert')
   async deleteAlertById(@Query('id') id: string) {
     return this.alertService

@@ -68,7 +68,7 @@ export class AlertRepository {
     });
   }
 
-  public registerAlert(alert: any): Promise<Alert> {
+  public registerAlert(alert: Alert): Promise<Alert> {
     return new Promise<Alert>((resolve, reject) => {
       this.alertRepository
         .save(alert)

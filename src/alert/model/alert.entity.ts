@@ -7,10 +7,10 @@ export class Alert {
   id: string;
   @Column()
   userId: string;
-  @Column()
+  @Column({nullable: true})
   clientId: string;
   @Column()
-  emergencyType: number;
+  emergencyType: string;
   @Column()
   description: string;
   @Column({ default: false })
