@@ -8,12 +8,6 @@ import * as path from 'path'
 import * as fs from 'fs'
 
 
-const httpsOptions = {
-  key: fs.readFileSync( path.join(__dirname, 'secrets', 'key.pem')),
-  cert: fs.readFileSync(path.join(__dirname, 'secrets', 'cert.pem')),
-};
-
-
 dotenv.config();
 
 let PORT = parseInt(process.env.AR_DB_SERVER_PORT) | 3000;
