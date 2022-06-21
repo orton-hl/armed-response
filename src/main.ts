@@ -8,7 +8,7 @@ import * as path from 'path'
 import * as fs from 'fs'
 
 
-// dotenv.config();
+dotenv.config();
 
 let PORT = parseInt(process.env.AR_DB_SERVER_PORT) | 3000;
 
