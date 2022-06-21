@@ -1,2 +1,2 @@
-docker build . -t test/api-nestjs
-docker run -p  80:3000  test/api-nestjs
+docker build . -t aura/api-nestjs
+docker run -p  3000:3000  -e AR_DB_HOST=192.168.0.107 -e AR_DB_PORT=5432 -e AR_DB_USERNAME=test -e AR_DB_PASSWORD=test -e AR_DATABASE=postgres -e AR_DATABASE_TYPE=postgres -e AR_DB_SERVER_PORT=3000 -e AR_API_VERSION=1  api-nestjs
